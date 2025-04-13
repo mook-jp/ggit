@@ -1,4 +1,4 @@
-module github.com/mook24/mygit
+module github.com/mook-jp/mygit
 
 go 1.24.1
 

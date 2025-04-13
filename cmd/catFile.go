@@ -1,13 +1,11 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
+// Copyright © 2025 mook-jp <mook24.jp@gmail.com>
 package cmd
 
 import (
 	"errors"
 	"fmt"
 
-	"github.com/mook24/mygit/internal/objectstore"
+	"github.com/mook-jp/mygit/internal/objectstore"
 	"github.com/spf13/cobra"
 )
 

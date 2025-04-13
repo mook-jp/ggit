@@ -1,3 +1,4 @@
+// Copyright © 2025 mook-jp <mook24.jp@gmail.com>
 package cmd
 
 import (

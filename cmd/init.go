@@ -1,10 +1,8 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
+// Copyright © 2025 mook-jp <mook24.jp@gmail.com>
 package cmd
 
 import (
-	"github.com/mook24/mygit/internal/initrepo"
+	"github.com/mook-jp/mygit/internal/initrepo"
 	"github.com/spf13/cobra"
 )
 
