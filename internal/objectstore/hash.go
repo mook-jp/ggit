@@ -2,6 +2,8 @@
 package objectstore
 
 import (
+	"bytes"
+	"compress/zlib"
 	"crypto/sha1"
 	"fmt"
 	"io"
@@ -25,7 +27,16 @@ func HashObject(filename string, write bool, out io.Writer) (string, error) {
 	hashStr := fmt.Sprintf("%x", hash)
 
 	if write {
-		// ディレクトリとふぃあるに分けてフォルダとファイルを作成する
+		// データを zlib で圧縮する
+		var full_zlib bytes.Buffer
+		w := zlib.NewWriter(&full_zlib)
+		_, err = w.Write(full)
+		if err != nil {
+			return "", fmt.Errorf("failed to write zlib: %w", err)
+		}
+		w.Close()
+
+		// ディレクトリとファイルに分けてフォルダとファイルを作成する
 		// 例: .mygit/objects/ab/cd1234567890abcdef1234567890abcdef1234
 		// 2文字目までをディレクトリ名にして、3文字目以降をファイル名にする
 		// 一つのディレクトリに何万個もファイルが入ると遅くなるので、2文字目までをディレクトリ名にする
@@ -42,7 +53,7 @@ func HashObject(filename string, write bool, out io.Writer) (string, error) {
 		defer f.Close()
 
 		// ファイルに書き込む
-		if _, err := f.Write(full); err != nil {
+		if _, err := f.Write(full_zlib.Bytes()); err != nil {
 			return "", fmt.Errorf("failed to write object: %w", err)
 		}
 	}

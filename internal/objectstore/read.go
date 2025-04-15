@@ -2,8 +2,11 @@
 package objectstore
 
 import (
+	"bytes"
+	"compress/zlib"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -15,15 +18,28 @@ func ReadObjectRaw(hash string) (header string, body []byte, err error) {
 		return "", nil, errors.New("invalid hash")
 	}
 	path := filepath.Join(".mygit", "objects", hash[:2], hash[2:])
-	raw, err := os.ReadFile(path)
+	compressedData, err := os.ReadFile(path)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to read object file: %w", err)
 	}
 
+	// zlibで圧縮されたデータを解凍する
+	r, err := zlib.NewReader(bytes.NewReader(compressedData))
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to create zlib reader: %w", err)
+	}
+	defer r.Close()
+
+	var out bytes.Buffer
+	if _, err := io.Copy(&out, r); err != nil {
+		return "", nil, fmt.Errorf("failed to read zlib data: %w", err)
+	}
+	raw := out.Bytes()
+
 	// Gitオブジェクトは "blob <size>\0<content>" の形式
 	parts := strings.SplitN(string(raw), "\u0000", 2)
 	if len(parts) != 2 {
-		return "", nil, errors.New("invalid object format")
+		return "", nil, errors.New("invalid object format: missing header/body separator")
 	}
 	return parts[0], []byte(parts[1]), nil
 }
