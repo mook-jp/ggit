@@ -1,4 +1,4 @@
-module github.com/mook-jp/mygit
+module github.com/mook-jp/ggit
 
 go 1.24.1
 

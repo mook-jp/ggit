@@ -4,7 +4,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/mook-jp/mygit/internal/objectstore"
+	"github.com/mook-jp/ggit/internal/objectstore"
 	"github.com/spf13/cobra"
 )
 

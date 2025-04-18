@@ -2,7 +2,7 @@
 package cmd
 
 import (
-	"github.com/mook-jp/mygit/internal/initrepo"
+	"github.com/mook-jp/ggit/internal/initrepo"
 	"github.com/spf13/cobra"
 )
 
