@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"compress/zlib"
 	"crypto/sha1"
-	"encoding/hex"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -34,6 +33,7 @@ func Write(baseDir string) (string, error) {
 		// スライスに変更しないと append でエラーになる
 		sum := sha1.Sum(full)
 		hash := sum[:]
+		hashStr := fmt.Sprintf("%x", hash)
 
 		// zlib 圧縮
 		var compressed bytes.Buffer
@@ -44,7 +44,7 @@ func Write(baseDir string) (string, error) {
 		w.Close()
 
 		// zlib 圧縮したデータを保存
-		objPath := filepath.Join(".mygit", "objects", hex.EncodeToString(hash[:2]), hex.EncodeToString(hash[2:]))
+		objPath := filepath.Join(".mygit", "objects", hashStr[:2], hashStr[2:])
 		if err := os.MkdirAll(filepath.Dir(objPath), 0755); err != nil {
 			return err
 		}
@@ -78,7 +78,9 @@ func Write(baseDir string) (string, error) {
 	treeFull := append([]byte(treeHeader), entries...)
 
 	// ハッシュを計算
-	treeHush := sha1.Sum(treeFull)
+	treeSum := sha1.Sum(treeFull)
+	treeHush := treeSum[:]
+	treeHushStr := fmt.Sprintf("%x", treeHush)
 
 	// ツリーオブジェクトを圧縮
 	var treeCompressed bytes.Buffer
@@ -89,7 +91,7 @@ func Write(baseDir string) (string, error) {
 	w.Close()
 
 	// ツリーオブジェクトを保存
-	treePath := filepath.Join(".mygit", "objects", hex.EncodeToString(treeHush[:2]), hex.EncodeToString(treeHush[2:]))
+	treePath := filepath.Join(".mygit", "objects", treeHushStr[:2], treeHushStr[2:])
 	if err := os.MkdirAll(filepath.Dir(treePath), 0755); err != nil {
 		return "", err
 	}
