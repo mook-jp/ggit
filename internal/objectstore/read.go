@@ -11,13 +11,20 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/mook-jp/ggit/internal/repository"
 )
 
 func ReadObjectRaw(hash string) (header string, body []byte, err error) {
 	if len(hash) < 2 {
 		return "", nil, errors.New("invalid hash")
 	}
-	path := filepath.Join(".mygit", "objects", hash[:2], hash[2:])
+
+	repoRoot, err := repository.FindRepoRoot(".")
+	if err != nil {
+		return "", nil, err
+	}
+	path := filepath.Join(repoRoot, ".mygit", "objects", hash[:2], hash[2:])
 	compressedData, err := os.ReadFile(path)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to read object file: %w", err)
