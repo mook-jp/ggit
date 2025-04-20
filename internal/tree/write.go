@@ -44,7 +44,7 @@ func Write(baseDir string) (string, error) {
 		w.Close()
 
 		// zlib 圧縮したデータを保存
-		objPath := filepath.Join(".mygit", "objects", hashStr[:2], hashStr[2:])
+		objPath := filepath.Join(baseDir, ".mygit", "objects", hashStr[:2], hashStr[2:])
 		if err := os.MkdirAll(filepath.Dir(objPath), 0755); err != nil {
 			return err
 		}
@@ -91,7 +91,7 @@ func Write(baseDir string) (string, error) {
 	w.Close()
 
 	// ツリーオブジェクトを保存
-	treePath := filepath.Join(".mygit", "objects", treeHushStr[:2], treeHushStr[2:])
+	treePath := filepath.Join(baseDir, ".mygit", "objects", treeHushStr[:2], treeHushStr[2:])
 	if err := os.MkdirAll(filepath.Dir(treePath), 0755); err != nil {
 		return "", err
 	}
