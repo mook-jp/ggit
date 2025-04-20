@@ -24,7 +24,7 @@ var revParseCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		repoRoot, err := repository.FindRepoRoot(".")
 		if err != nil {
-			return fmt.Errorf("not a ggit repository (or any parent dir): .mygit not found", err)
+			return fmt.Errorf("not a ggit repository (or any parent dir): .mygit not found")
 		}
 
 		// --show-toplevel オプション: ルートディレクトリのパス
