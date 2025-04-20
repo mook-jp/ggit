@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -15,7 +14,6 @@ func FindRepoRoot(start string) (string, error) {
 
 	for {
 		mygitPath := filepath.Join(dir, ".mygit")
-		fmt.Println("mygitPath:", mygitPath)
 
 		info, err := os.Stat(mygitPath)
 		if err == nil && info.IsDir() {
