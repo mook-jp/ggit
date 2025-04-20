@@ -25,6 +25,8 @@ var catFileCmd = &cobra.Command{
 		}
 		hash := args[0]
 
+		// オプション情報を取得する
+		// 各オプションは排他的に実行できる
 		modeCount := 0
 		if printFlag {
 			modeCount++

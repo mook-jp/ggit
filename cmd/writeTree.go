@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/mook-jp/ggit/internal/repository"
 	"github.com/mook-jp/ggit/internal/tree"
 	"github.com/spf13/cobra"
 )
@@ -15,7 +16,11 @@ var writeTreeCmd = &cobra.Command{
 	Use:   "write-tree",
 	Short: "Create a tree object from the working directory",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		hash, err := tree.Write(".")
+		repoRoot, err := repository.FindRepoRoot(".")
+		if err != nil {
+			return err
+		}
+		hash, err := tree.Write(repoRoot)
 		if err != nil {
 			return err
 		}

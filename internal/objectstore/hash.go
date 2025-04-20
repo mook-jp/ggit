@@ -9,10 +9,12 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/mook-jp/ggit/internal/repository"
 )
 
 // Hashを作成してファイルを作成する
-func HashObject(filename string, write bool, out io.Writer) (string, error) {
+func HashObject(filename string, writeFlag bool, out io.Writer) (string, error) {
 	data, err := os.ReadFile(filename)
 	if err != nil {
 		return "", fmt.Errorf("failed to read file: %w", err)
@@ -26,7 +28,13 @@ func HashObject(filename string, write bool, out io.Writer) (string, error) {
 	hash := sha1.Sum(full)
 	hashStr := fmt.Sprintf("%x", hash)
 
-	if write {
+	if writeFlag {
+		// オブジェクトルートを取得する
+		repoRoot, err := repository.FindRepoRoot(".")
+		if err != nil {
+			return "", err
+		}
+
 		// データを zlib で圧縮する
 		var full_zlib bytes.Buffer
 		w := zlib.NewWriter(&full_zlib)
@@ -40,7 +48,7 @@ func HashObject(filename string, write bool, out io.Writer) (string, error) {
 		// 例: .mygit/objects/ab/cd1234567890abcdef1234567890abcdef1234
 		// 2文字目までをディレクトリ名にして、3文字目以降をファイル名にする
 		// 一つのディレクトリに何万個もファイルが入ると遅くなるので、2文字目までをディレクトリ名にする
-		objectPath := filepath.Join(".mygit", "objects", hashStr[:2], hashStr[2:])
+		objectPath := filepath.Join(repoRoot, ".mygit", "objects", hashStr[:2], hashStr[2:])
 		if err := os.MkdirAll(filepath.Dir(objectPath), 0755); err != nil {
 			return "", fmt.Errorf("failed to create object dir: %w", err)
 		}
